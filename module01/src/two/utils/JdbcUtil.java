@@ -1,0 +1,46 @@
+package two.utils;
+
+
+import java.sql.*;
+
+public class JdbcUtil {
+
+    public static Connection getConnection() throws Exception {
+        Class.forName("com.mysql.cj.jdbc.Driver");
+
+
+        String url = "jdbc:mysql://127.0.0.1:3306/user?useSSL=false&useLegacyDatetimeCode=false&serverTimezone=UTC";
+        String user = "root";
+        String password = "123456";
+
+        Connection connection = DriverManager.getConnection(url, user, password);
+
+        return connection;
+
+    }
+
+    public static void release(ResultSet resultSet, Statement statement, Connection connection) {
+        if (resultSet != null) {
+            try {
+                resultSet.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+        if (statement != null) {
+            try {
+                statement.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+        if (connection != null) {
+            try {
+                connection.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+}
+
