@@ -66,6 +66,8 @@ public class CartDaoImpl implements CartDao {
         return cartItems;
     }
 
+
+
     private CartItem extractCartItemFromResultSet(ResultSet resultSet) throws SQLException {
         CartItem cartItem = new CartItem();
         cartItem.setProductId(resultSet.getInt("product_id"));
