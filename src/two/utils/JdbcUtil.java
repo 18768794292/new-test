@@ -42,5 +42,32 @@ public class JdbcUtil {
             }
         }
     }
+
+    public static void close(ResultSet resultSet, PreparedStatement orderStatement, PreparedStatement statement, Connection connection) {
+        try {
+            if (resultSet != null) {
+                resultSet.close();
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        try {
+            if (statement != null) {
+                statement.close();
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        try {
+            if (connection != null) {
+                connection.close();
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
 }
 
