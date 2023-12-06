@@ -17,7 +17,15 @@ public class ProductServlet extends HttpServlet {
     private ProductDao productDao = new ProductDaoImpl();
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        List<Product> products = productDao.getAllProducts();
+        List<Product> products = null;
+        try {
+            products = productDao.getAllProducts();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        request.setCharacterEncoding("UTF-8");
+        response.setCharacterEncoding("UTF-8");
+
         request.setAttribute("products", products);
         request.getRequestDispatcher("/main.jsp").forward(request, response);
     }

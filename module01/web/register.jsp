@@ -79,6 +79,9 @@
 <form action="${pageContext.request.contextPath}/RegisterServlet" method="post">
     <h3>用户名：<input type="text" name="username"></h3>
     <h3>密码：<input type="password" name="password"></h3>
+    <h3>Email：<input type="text" name="email"></h3>
+    <h3>电话号码：<input type="text" name="phoneNumber"></h3>
+    <h3>地址：<input type="text" name="address"></h3>
     <input type="submit" value="注册">
     <input type="reset" value="重置">
 </form>

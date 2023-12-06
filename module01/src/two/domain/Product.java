@@ -7,7 +7,8 @@ public class Product {
     private String name;
     private BigDecimal price;
     private String description;
-
+    private String image;
+    private int stock;
     // Getters and setters...
     public int getId() {
         return id;
@@ -39,5 +40,20 @@ public class Product {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+    public String getImage() {
+        return image;
+    }
+
+    public void setImage(String image) {
+        this.image = image;
+    }
+
+    public int getStock() {
+        return stock;
+    }
+
+    public void setStock(int stock) {
+        this.stock = stock;
     }
 }

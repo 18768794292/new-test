@@ -4,5 +4,6 @@ import java.util.List;
 import two.domain.Product;
 
 public interface ProductDao {
-    List<Product> getAllProducts();
+    List<Product> getAllProducts() throws Exception;
+
 }

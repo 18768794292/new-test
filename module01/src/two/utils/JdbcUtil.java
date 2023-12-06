@@ -42,5 +42,61 @@ public class JdbcUtil {
             }
         }
     }
+
+    public static void close(ResultSet resultSet, PreparedStatement orderStatement, PreparedStatement statement, Connection connection) {
+        try {
+            if (resultSet != null) {
+                resultSet.close();
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        try {
+            if (statement != null) {
+                statement.close();
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        try {
+            if (connection != null) {
+                connection.close();
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    public static void close(ResultSet resultSet, PreparedStatement preparedStatement, Connection connection) {
+        try {
+            if (resultSet != null && !resultSet.isClosed()) {
+                resultSet.close();
+            }
+        } catch (SQLException e) {
+            e.printStackTrace(); // Log this exception or handle it as needed
+        } finally {
+            try {
+                if (preparedStatement != null && !preparedStatement.isClosed()) {
+                    preparedStatement.close();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace(); // Log this exception or handle it as needed
+            } finally {
+                try {
+                    if (connection != null && !connection.isClosed()) {
+                        connection.close();
+                    }
+                } catch (SQLException e) {
+                    e.printStackTrace(); // Log this exception or handle it as needed
+                }
+            }
+        }
+    }
+
+    public static void close(PreparedStatement preparedStatement, Connection connection) {
+    }
 }
 
