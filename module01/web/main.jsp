@@ -131,6 +131,7 @@
 
   function redirectToOrders() {
     alert("Redirecting to My Orders");
+    window.location.href = "orders.jsp";
   }
 </script>
 

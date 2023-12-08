@@ -61,22 +61,30 @@
 <%
   if (cartItems != null && !cartItems.isEmpty()) {
 %>
-<table>
-  <tr>
-    <th>Product Name</th>
-    <th>Price</th>
-    <th>Quantity</th>
-  </tr>
 
-  <% for (CartItem cartItem : cartItems) { %>
-  <tr>
-    <td><%= cartItem.getProductName() %></td>
-    <td><%= cartItem.getPrice() %></td>
-    <td><%= cartItem.getQuantity() %></td>
-  </tr>
-  <% } %>
+<form action="addToOrder" method="post">
+  <table>
+    <tr>
+      <th>Select</th>
+      <th>Product Name</th>
+      <th>Price</th>
+      <th>Image</th>
+      <th>Quantity</th>
+    </tr>
 
-</table>
+    <% for (CartItem cartItem : cartItems) { %>
+    <tr>
+      <td><input type="checkbox" name="selectedItems" value="<%= cartItem.getProductId() %>"></td>
+      <td><%= cartItem.getProductName() %></td>
+      <td><%= cartItem.getPrice() %></td>
+      <td><img src="<%= cartItem.getProductImage() %>" alt="<%= cartItem.getProductName() %> Image" width="100" height="150"></td>
+      <td><%= cartItem.getQuantity() %></td>
+    </tr>
+    <% } %>
+  </table>
+
+  <input type="submit" value="Add to Order">
+</form>
 <%
   } else {
     out.println("<p>Your cart is empty.</p>");

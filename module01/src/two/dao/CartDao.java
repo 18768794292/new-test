@@ -9,4 +9,6 @@ public interface CartDao {
     void addToCart(int productId, String productName, BigDecimal productPrice, int quantity) throws Exception;
 
     List<CartItem> getCartItems() throws Exception;
+
+    CartItem getCartItemById(int parseInt) throws Exception;
 }

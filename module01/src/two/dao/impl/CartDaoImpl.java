@@ -2,6 +2,7 @@ package two.dao.impl;
 
 import two.dao.CartDao;
 import two.domain.CartItem;
+import two.service.UserService;
 import two.utils.JdbcUtil;
 
 import java.math.BigDecimal;
@@ -14,7 +15,7 @@ import java.util.List;
 
 public class CartDaoImpl implements CartDao {
     @Override
-    public void addToCart(int productId, String productName, BigDecimal productPrice, int quantity) throws Exception {
+    public void addToCart(int productId, String productName, BigDecimal productPrice,int quantity) throws Exception {
         try (Connection connection = JdbcUtil.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(
                      "INSERT INTO shopping_cart (user_id, product_id, quantity) VALUES (?, ?, ?)")) {
@@ -23,7 +24,7 @@ public class CartDaoImpl implements CartDao {
             //暂时先用这里
             //
             //
-            int userId = 1;
+            int userId = UserService.getLoggedInUserId();
 
             preparedStatement.setInt(1, userId);
             preparedStatement.setInt(2, productId);
@@ -42,13 +43,13 @@ public class CartDaoImpl implements CartDao {
 
         try (Connection connection = JdbcUtil.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(
-                     "SELECT c.product_id, p.name AS product_name, p.price, c.quantity " +
+                     "SELECT c.product_id, p.name AS product_name, p.price, c.quantity, p.image " +
                              "FROM shopping_cart c " +
                              "JOIN products p ON c.product_id = p.id " +
                              "WHERE c.user_id = ?")) {
 
             // 假设用户ID为1（你需要根据实际情况获取用户ID）
-            int userId = 1;
+            int userId = UserService.getLoggedInUserId();
 
             preparedStatement.setInt(1, userId);
 
@@ -66,7 +67,35 @@ public class CartDaoImpl implements CartDao {
         return cartItems;
     }
 
+    @Override
+    public CartItem getCartItemById(int productId) throws Exception {
+        CartItem cartItem = null;
 
+        try (Connection connection = JdbcUtil.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(
+                     "SELECT c.product_id, p.name AS product_name, p.price, c.quantity, p.image " +
+                             "FROM shopping_cart c " +
+                             "JOIN products p ON c.product_id = p.id " +
+                             "WHERE c.user_id = ? AND c.product_id = ?")) {
+
+            // 假设用户ID为1（根据实际情况获取用户ID）
+            int userId = UserService.getLoggedInUserId();
+
+            preparedStatement.setInt(1, userId);
+            preparedStatement.setInt(2, productId);
+
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                if (resultSet.next()) {
+                    cartItem = extractCartItemFromResultSet(resultSet);
+                }
+            }
+        } catch (SQLException e) {
+            handleSQLException(e);
+            throw new Exception("根据ID获取购物车项时出错", e);
+        }
+
+        return cartItem;
+    }
 
     private CartItem extractCartItemFromResultSet(ResultSet resultSet) throws SQLException {
         CartItem cartItem = new CartItem();
@@ -74,8 +103,11 @@ public class CartDaoImpl implements CartDao {
         cartItem.setProductName(resultSet.getString("product_name"));
         cartItem.setPrice(resultSet.getBigDecimal("price"));
         cartItem.setQuantity(resultSet.getInt("quantity"));
+        cartItem.setProductImage(resultSet.getString("image"));
+
         return cartItem;
     }
+
 
     private void handleSQLException(SQLException e) {
         e.printStackTrace();

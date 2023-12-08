@@ -3,6 +3,7 @@ package two.servlet;
 import two.dao.UserDao;
 import two.dao.impl.UserDaoImpl;
 import two.domain.User;
+import two.service.UserService;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -32,6 +33,8 @@ public class LoginServlet extends HttpServlet {
         if (user != null) {
             // 登录成功，将用户信息存储在 session 中
             request.getSession().setAttribute("user", user);
+            // 设置已登录用户的ID到 UserService 中
+            UserService.setLoggedInUserId(user.getId());
             // 重定向到系统的主界面
             response.sendRedirect(request.getContextPath() + "/main.jsp");
         } else {
