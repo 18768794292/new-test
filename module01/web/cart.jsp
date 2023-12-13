@@ -52,6 +52,20 @@
     p {
       color: #004d40;
     }
+
+    .button-container {
+      margin-top: 20px;
+    }
+
+    .button-container a {
+      display: inline-block;
+      margin: 0 10px;
+      padding: 10px 20px;
+      text-decoration: none;
+      background-color: #004d40;
+      color: #fff;
+      border-radius: 5px;
+    }
   </style>
 </head>
 <body>
@@ -70,6 +84,7 @@
       <th>Price</th>
       <th>Image</th>
       <th>Quantity</th>
+      <th>Action</th> <!-- New column for remove button -->
     </tr>
 
     <% for (CartItem cartItem : cartItems) { %>
@@ -77,19 +92,29 @@
       <td><input type="checkbox" name="selectedItems" value="<%= cartItem.getProductId() %>"></td>
       <td><%= cartItem.getProductName() %></td>
       <td><%= cartItem.getPrice() %></td>
-      <td><img src="<%= cartItem.getProductImage() %>" alt="<%= cartItem.getProductName() %> Image" width="100" height="150"></td>
+      <td><img src="<%= cartItem.getProductImage() %>" alt="<%= cartItem.getProductName() %> Image" width="160" height="150"></td>
       <td><%= cartItem.getQuantity() %></td>
+      <td>
+        <form action="removeFromCart" method="post">
+          <input type="hidden" name="cartId" value="<%= cartItem.getCartId() %>">
+          <input type="submit" value="Remove">
+        </form>
+      </td>
     </tr>
     <% } %>
   </table>
 
-  <input type="submit" value="Add to Order">
+  <input type="submit" value="Add Selected to Order">
 </form>
+
 <%
   } else {
     out.println("<p>Your cart is empty.</p>");
   }
 %>
-
+<div class="button-container">
+  <a href="main.jsp">Back to main</a>
+  <a href="orders.jsp">go to orders Page</a>
+</div>
 </body>
 </html>

@@ -13,6 +13,14 @@ public class User {
     private String email;
     private String phoneNumber;
     private String address;
+    private int role; // 新添加的 role 字段
+    public int getRole() {
+        return role;
+    }
+
+    public void setRole(int role) {
+        this.role = role;
+    }
     public int getId() {
         return id;
     }
@@ -67,6 +75,7 @@ public class User {
         if (o == null || getClass() != o.getClass()) return false;
         User user = (User) o;
         return id == user.id &&
+                role == user.role &&
                 Objects.equals(username, user.username) &&
                 Objects.equals(password, user.password) &&
                 Objects.equals(email, user.email) &&
@@ -76,7 +85,7 @@ public class User {
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, username, password, email, phoneNumber, address);
+        return Objects.hash(id, username, password, email, phoneNumber, address,role);
     }
 
     @Override
@@ -88,6 +97,7 @@ public class User {
                 ", email='" + email + '\'' +
                 ", phoneNumber='" + phoneNumber + '\'' +
                 ", address='" + address + '\'' +
+                ", role=" + role +
                 '}';
     }
 }

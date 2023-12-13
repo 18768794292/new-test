@@ -10,5 +10,7 @@ public interface CartDao {
 
     List<CartItem> getCartItems() throws Exception;
 
-    CartItem getCartItemById(int parseInt) throws Exception;
+    CartItem getCartItemById(int productId) throws Exception;
+    // Remove item from the cart
+    void removeFromCart(int cartId) throws Exception;
 }

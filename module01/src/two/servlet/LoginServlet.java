@@ -35,8 +35,14 @@ public class LoginServlet extends HttpServlet {
             request.getSession().setAttribute("user", user);
             // 设置已登录用户的ID到 UserService 中
             UserService.setLoggedInUserId(user.getId());
-            // 重定向到系统的主界面
-            response.sendRedirect(request.getContextPath() + "/main.jsp");
+            // 判断用户角色，进行相应的重定向
+            if (user.getRole() == 1) {
+                // 管理员，重定向到管理界面
+                response.sendRedirect(request.getContextPath() + "/manage.jsp");
+            } else {
+                // 普通用户，重定向到主界面
+                response.sendRedirect(request.getContextPath() + "/main.jsp");
+            }
         } else {
             // 登录失败，重定向到错误页面
             response.sendRedirect(request.getContextPath() + "/error.jsp");

@@ -2,10 +2,14 @@ package two.servlet;
 
 import two.dao.CartDao;
 import two.dao.OrderDao;
+import two.dao.UserDao;
 import two.dao.impl.CartDaoImpl;
 import two.dao.impl.OrderDaoImpl;
+import two.dao.impl.UserDaoImpl;
 import two.domain.CartItem;
 import two.domain.OrderItem;
+import two.domain.User;
+import two.service.UserService;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -33,12 +37,16 @@ public class AddToOrderServlet extends HttpServlet {
 
                     // 根据商品ID从购物车中获取商品信息
                     CartItem cartItem = cartDao.getCartItemById(productId);
-
+                    UserDao userDao = new UserDaoImpl();
+                    int userId = UserService.getLoggedInUserId();
+                    User user = userDao.getUserById(userId);
                     // 添加商品到订单
-                    orderDao.addToOrder(cartItem.getProductId(), cartItem.getProductName(), cartItem.getPrice(), cartItem.getProductImage(), cartItem.getQuantity());
-
-                    // 在此可以选择从购物车中移除对应的商品，根据需要
-                    // cartDao.removeFromCart(productId);
+                    orderDao.addToOrder(cartItem.getProductId(), cartItem.getProductName(), cartItem.getPrice(), cartItem.getProductImage(), cartItem.getQuantity(), user.getUsername(),
+                            user.getPhoneNumber(),
+                            user.getAddress());
+                    // 从购物车中移除对应的商品
+                    cartDao.removeFromCart(cartItem.getCartId());
+                    System.out.println("删除相对应商品");
                 }
             }
 
@@ -48,9 +56,7 @@ public class AddToOrderServlet extends HttpServlet {
             // 将订单商品列表添加到请求属性中
             request.setAttribute("orderItems", orderItems);
 
-            // 转发到订单页面
-            RequestDispatcher dispatcher = request.getRequestDispatcher("/orders.jsp");
-            dispatcher.forward(request, response);
+            response.sendRedirect(request.getContextPath() + "/orders.jsp");
         } catch (Exception e) {
             e.printStackTrace();
             // 处理异常，发送错误响应

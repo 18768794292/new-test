@@ -29,20 +29,8 @@ public class AddToCartServlet extends HttpServlet {
             // 添加商品到购物车
             cartDao.addToCart(productId, productName, productPrice, quantity);
 
-            // 获取更新后的购物车商品列表
-            List<CartItem> cartItems = cartDao.getCartItems();
-            // 调试语句，输出购物车商品列表的内容
-            System.out.println("Cart Items:");
-            for (CartItem cartItem : cartItems) {
-                System.out.println(cartItem.toString());
-            }
-
-            // 将购物车商品列表添加到请求属性中
-            request.setAttribute("cartItems", cartItems);
-
-            // 转发到购物车页面
-            RequestDispatcher dispatcher = request.getRequestDispatcher("/cart.jsp");
-            dispatcher.forward(request, response);
+            // 重定向到购物车页面
+            response.sendRedirect(request.getContextPath() + "/cart.jsp");
         } catch (Exception e) {
             e.printStackTrace();
             // 处理异常，发送错误响应
@@ -50,5 +38,6 @@ public class AddToCartServlet extends HttpServlet {
         }
     }
 }
+
 
 

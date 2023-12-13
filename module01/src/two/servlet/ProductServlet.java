@@ -18,11 +18,22 @@ public class ProductServlet extends HttpServlet {
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         List<Product> products = null;
+
         try {
-            products = productDao.getAllProducts();
+            String typeIdParam = request.getParameter("typeId");
+
+            if (typeIdParam != null && !typeIdParam.isEmpty()) {
+                // 如果存在商品类型参数，则按类型获取产品
+                int typeId = Integer.parseInt(typeIdParam);
+                products = productDao.getProductsByType(typeId);
+            } else {
+                // 否则获取所有产品
+                products = productDao.getAllProducts();
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
+
         request.setCharacterEncoding("UTF-8");
         response.setCharacterEncoding("UTF-8");
 

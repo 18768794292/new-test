@@ -9,7 +9,17 @@ public class Product {
     private String description;
     private String image;
     private int stock;
+    private ProductType productType;  // 商品类型
+
     // Getters and setters...
+
+    public ProductType getProductType() {
+        return productType;
+    }
+
+    public void setProductType(ProductType productType) {
+        this.productType = productType;
+    }
     public int getId() {
         return id;
     }

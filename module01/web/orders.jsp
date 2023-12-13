@@ -52,6 +52,20 @@
     p {
       color: #004d40;
     }
+
+    .button-container {
+      margin-top: 20px;
+    }
+
+    .button-container a {
+      display: inline-block;
+      margin: 0 10px;
+      padding: 10px 20px;
+      text-decoration: none;
+      background-color: #004d40;
+      color: #fff;
+      border-radius: 5px;
+    }
   </style>
 </head>
 <body>
@@ -63,20 +77,41 @@
 %>
 <table>
   <tr>
+    <th>OrderId</th>
     <th>Product Name</th>
     <th>Price</th>
     <th>Quantity</th>
+    <th>Total Price</th>
+    <th>Product Image</th>
   </tr>
 
-  <% for (OrderItem orderItem : orderItems) { %>
+  <% for (OrderItem orderItem : orderItems) {
+    System.out.println("Order ID: " + orderItem.getOrderId());
+    %>
   <tr>
+    <td><%= orderItem.getOrderId() %></td>
     <td><%= orderItem.getProductName() %></td>
     <td><%= orderItem.getPrice() %></td>
     <td><%= orderItem.getQuantity() %></td>
+    <td><%= orderItem.getTotal() %></td>
+    <td><img src="<%= orderItem.getProductImage() %>" alt="Product Image"width="50" height="100"></td>
   </tr>
+
+  <tr>
+    <td>用户名:<%= orderItem.getUsername() %></td>
+    <td>电话号码:<%= orderItem.getPhoneNumber() %></td>
+    <td>地址:<%= orderItem.getAddress() %></td>
+  </tr>
+
   <% } %>
 
 </table>
+
+<div class="button-container">
+  <a href="cart.jsp">Back to Cart</a>
+  <a href="main.jsp">Back to Main Page</a>
+</div>
+
 <%
   } else {
     out.println("<p>Your order history is empty.</p>");

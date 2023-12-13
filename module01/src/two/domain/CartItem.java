@@ -8,17 +8,20 @@ public class CartItem {
     private BigDecimal price;
     private int quantity;
     private String image;
+    private int cartId;
     public CartItem() {
         // 默认构造方法
     }
 
-    public CartItem(int productId, String productName, BigDecimal price, String image,int quantity) {
+    public CartItem(int productId, String productName, BigDecimal price, String image,int quantity,int cartId) {
         this.productId = productId;
         this.productName = productName;
         this.price = price;
         this.image=image;
         this.quantity = quantity;
+        this.cartId=cartId;
     }
+
     public String getProductImage() {
         return image;
     }
@@ -57,4 +60,12 @@ public class CartItem {
     public void setQuantity(int quantity) {
         this.quantity = quantity;
     }
+    public int getCartId() {
+        return cartId;
+    }
+
+    public void setCartId(int cartId) {
+        this.cartId = cartId;
+    }
+
 }

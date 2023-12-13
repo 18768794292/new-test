@@ -12,7 +12,7 @@ import java.util.List;
 
 public class OrderDaoImpl implements OrderDao {
     @Override
-    public void addToOrder(int productId, String productName, BigDecimal productPrice, String image, int quantity) throws Exception {
+    public void addToOrder(int productId, String productName, BigDecimal productPrice, String image, int quantity,String username,String phoneNumber,String address) throws Exception {
         Connection connection = null;
         try {
             connection = JdbcUtil.getConnection();
@@ -72,22 +72,21 @@ public class OrderDaoImpl implements OrderDao {
 // 其他方法保持不变
 
 
-    @Override
     public List<OrderItem> getOrderItems() throws Exception {
         List<OrderItem> orderItems = new ArrayList<>();
 
         try (Connection connection = JdbcUtil.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(
-                     "SELECT o.product_id, p.name AS product_name, p.price, o.quantity, o.total_price, p.image " +
+                     "SELECT o.product_id, p.name AS product_name, p.price, o.quantity, o.total_price, p.image, " +
+                             "u.username, u.phoneNumber, u.address, ord.order_id " +
                              "FROM order_details o " +
                              "JOIN products p ON o.product_id = p.id " +
                              "JOIN orders ord ON o.order_id = ord.order_id " +
+                             "JOIN javaweb_user u ON ord.user_id = u.id " +
                              "WHERE ord.user_id = ?"
              )) {
 
-            // 假设用户ID为1（你需要根据实际情况获取用户ID）
             int userId = UserService.getLoggedInUserId();
-//这里确实少了第二个参数productid；怎么获取这个id呢，如果不获取，目前是这样
             preparedStatement.setInt(1, userId);
 
             try (ResultSet resultSet = preparedStatement.executeQuery()) {
@@ -109,18 +108,16 @@ public class OrderDaoImpl implements OrderDao {
 
         try (Connection connection = JdbcUtil.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(
-                     "SELECT o.product_id, p.name AS product_name, p.price, o.quantity, o.total_price, p.image " +
+                     "SELECT o.product_id, p.name AS product_name, p.price, o.quantity, o.total_price, p.image, ord.order_id " +
                              "FROM order_details o " +
                              "JOIN products p ON o.product_id = p.id " +
                              "JOIN orders ord ON o.order_id = ord.order_id " +
                              "WHERE ord.user_id = ? AND o.product_id = ?"
              )) {
 
-            // 假设用户ID为1（你需要根据实际情况获取用户ID）
             int userId = UserService.getLoggedInUserId();
-
             preparedStatement.setInt(1, userId);
-            preparedStatement.setInt(2, productId); // 使用方法参数中的 productId
+            preparedStatement.setInt(2, productId);
 
             try (ResultSet resultSet = preparedStatement.executeQuery()) {
                 if (resultSet.next()) {
@@ -129,7 +126,7 @@ public class OrderDaoImpl implements OrderDao {
             }
         } catch (SQLException e) {
             handleSQLException(e);
-            throw new Exception("根据ID获取订单项时出错", e);
+            throw new Exception("Error fetching order item by ID", e);
         }
 
         return orderItem;
@@ -141,11 +138,16 @@ public class OrderDaoImpl implements OrderDao {
         orderItem.setProductName(resultSet.getString("product_name"));
         orderItem.setPrice(resultSet.getBigDecimal("price"));
         orderItem.setQuantity(resultSet.getInt("quantity"));
-        orderItem.updateTotal();  // 使用 updateTotal 方法更新总价
+        orderItem.updateTotal();
         orderItem.setProductImage(resultSet.getString("image"));
+        orderItem.setUsername(resultSet.getString("username"));
+        orderItem.setPhoneNumber(resultSet.getString("phoneNumber"));
+        orderItem.setAddress(resultSet.getString("address"));
+        orderItem.setOrderId(resultSet.getInt("order_id"));
 
         return orderItem;
     }
+
 
     private void handleSQLException(SQLException e) {
         e.printStackTrace();
