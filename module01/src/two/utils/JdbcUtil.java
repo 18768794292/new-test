@@ -7,16 +7,11 @@ public class JdbcUtil {
 
     public static Connection getConnection() throws Exception {
         Class.forName("com.mysql.cj.jdbc.Driver");
-
-
         String url = "jdbc:mysql://127.0.0.1:3306/user?useSSL=false&useLegacyDatetimeCode=false&serverTimezone=UTC";
         String user = "root";
         String password = "123456";
-
         Connection connection = DriverManager.getConnection(url, user, password);
-
         return connection;
-
     }
 
     public static void release(ResultSet resultSet, Statement statement, Connection connection) {
@@ -76,21 +71,21 @@ public class JdbcUtil {
                 resultSet.close();
             }
         } catch (SQLException e) {
-            e.printStackTrace(); // Log this exception or handle it as needed
+            e.printStackTrace();
         } finally {
             try {
                 if (preparedStatement != null && !preparedStatement.isClosed()) {
                     preparedStatement.close();
                 }
             } catch (SQLException e) {
-                e.printStackTrace(); // Log this exception or handle it as needed
+                e.printStackTrace();
             } finally {
                 try {
                     if (connection != null && !connection.isClosed()) {
                         connection.close();
                     }
                 } catch (SQLException e) {
-                    e.printStackTrace(); // Log this exception or handle it as needed
+                    e.printStackTrace();
                 }
             }
         }

@@ -24,33 +24,33 @@ import java.util.List;
 @WebServlet("/addToOrder")
 public class AddToOrderServlet extends HttpServlet {
     private final OrderDao orderDao = new OrderDaoImpl();
-    private final CartDao cartDao = new CartDaoImpl(); // Assuming you have a CartDao
+    private final CartDao cartDao = new CartDaoImpl();
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         try {
-            // 获取选中的商品信息
+
             String[] selectedItems = request.getParameterValues("selectedItems");
 
             if (selectedItems != null && selectedItems.length > 0) {
                 for (String itemId : selectedItems) {
                     int productId = Integer.parseInt(itemId);
 
-                    // 根据商品ID从购物车中获取商品信息
+
                     CartItem cartItem = cartDao.getCartItemById(productId);
                     UserDao userDao = new UserDaoImpl();
                     int userId = UserService.getLoggedInUserId();
                     User user = userDao.getUserById(userId);
-                    // 添加商品到订单
+
                     orderDao.addToOrder(cartItem.getProductId(), cartItem.getProductName(), cartItem.getPrice(), cartItem.getProductImage(), cartItem.getQuantity(), user.getUsername(),
                             user.getPhoneNumber(),
                             user.getAddress());
-                    // 从购物车中移除对应的商品
+                    // 从购物车中移除
                     cartDao.removeFromCart(cartItem.getCartId());
                     System.out.println("删除相对应商品");
                 }
             }
 
-            // 获取更新后的订单商品列表
+            // 获取更新后
             List<OrderItem> orderItems = orderDao.getOrderItems();
 
             // 将订单商品列表添加到请求属性中
@@ -59,7 +59,7 @@ public class AddToOrderServlet extends HttpServlet {
             response.sendRedirect(request.getContextPath() + "/orders.jsp");
         } catch (Exception e) {
             e.printStackTrace();
-            // 处理异常，发送错误响应
+
             response.getWriter().write("添加商品到订单时出错");
         }
     }

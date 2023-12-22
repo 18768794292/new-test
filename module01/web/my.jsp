@@ -13,7 +13,7 @@
 %>
 <html>
 <head>
-  <title>My Profile</title>
+  <title>我的信息</title>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -96,7 +96,7 @@
       <td><input type="text" name="address" value="<%= user.getAddress() %>"></td>
     </tr>
   </table>
-  <input type="submit" value="Update Profile">
+  <input type="submit" value="提交修改">
 </form>
 <% } else { %>
 <p>用户信息不可用。</p>

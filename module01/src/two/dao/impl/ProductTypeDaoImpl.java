@@ -32,12 +32,6 @@ public class ProductTypeDaoImpl implements ProductTypeDao {
         return productTypes;
     }
 
-    private ProductType extractProductTypeFromResultSet(ResultSet resultSet) throws SQLException {
-        ProductType productType = new ProductType();
-        productType.setId(resultSet.getInt("id"));
-        productType.setTypeName(resultSet.getString("type_name"));
-        return productType;
-    }
     @Override
     public ProductType getProductTypeById(int typeId) throws Exception {
         ProductType productType = null;
@@ -58,8 +52,54 @@ public class ProductTypeDaoImpl implements ProductTypeDao {
         return productType;
     }
 
+    @Override
+    public void addProductType(ProductType productType) throws Exception {
+        try (Connection connection = JdbcUtil.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO product_types (type_name) VALUES (?)")) {
+
+            preparedStatement.setString(1, productType.getTypeName());
+            preparedStatement.executeUpdate();
+
+        } catch (SQLException e) {
+            handleSQLException(e);
+        }
+    }
+
+    @Override
+    public void updateProductType(ProductType productType) throws Exception {
+        try (Connection connection = JdbcUtil.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement("UPDATE product_types SET type_name = ? WHERE id = ?")) {
+
+            preparedStatement.setString(1, productType.getTypeName());
+            preparedStatement.setInt(2, productType.getId());
+            preparedStatement.executeUpdate();
+
+        } catch (SQLException e) {
+            handleSQLException(e);
+        }
+    }
+
+    @Override
+    public void deleteProductType(int typeId) throws Exception {
+        try (Connection connection = JdbcUtil.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement("DELETE FROM product_types WHERE id = ?")) {
+
+            preparedStatement.setInt(1, typeId);
+            preparedStatement.executeUpdate();
+
+        } catch (SQLException e) {
+            handleSQLException(e);
+        }
+    }
+
+    private ProductType extractProductTypeFromResultSet(ResultSet resultSet) throws SQLException {
+        ProductType productType = new ProductType();
+        productType.setId(resultSet.getInt("id"));
+        productType.setTypeName(resultSet.getString("type_name"));
+        return productType;
+    }
+
     private void handleSQLException(SQLException e) {
         e.printStackTrace();
-        // 处理异常的代码
     }
 }

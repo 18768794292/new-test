@@ -2,24 +2,31 @@
 <%@ page import="java.util.List" %>
 <%@ page import="two.dao.OrderDao" %>
 <%@ page import="two.dao.impl.OrderDaoImpl" %>
-
+<%@ page import="two.domain.User" %>
+<%@ page import="two.service.UserService" %>
+<!-- ManageOrders.jsp -->
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%
-  // 获取订单商品列表
+  // 获取所有用户订单商品列表
   OrderDao orderDao = new OrderDaoImpl();
   List<OrderItem> orderItems = null;
 
   try {
-    orderItems = orderDao.getOrderItems();
+    orderItems = orderDao.getAllOrders(); // 修改这里
   } catch (Exception e) {
     e.printStackTrace();
-
-    out.println("<p>获取订单商品时发生错误。</p>");
+    // 处理异常，例如日志记录或向用户显示错误信息
+    out.println("<p>Error fetching order items.</p>");
   }
+
+  // 获取当前登录的用户信息
+  User loggedInUser = UserService.getLoggedInUser();
+  // 在适当的位置添加以下语句，用于调试
+  System.out.println("loggedInUser: " + loggedInUser);
 %>
 <html>
 <head>
-  <title>您的订单</title>
+  <title>Orders</title>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -70,32 +77,30 @@
 </head>
 <body>
 
-<h2>您的订单</h2>
+<h2>Manage Orders</h2>
 
 <%
   if (orderItems != null && !orderItems.isEmpty()) {
 %>
 <table>
   <tr>
-    <th>订单号</th>
-    <th>商品名称</th>
-    <th>价格</th>
-    <th>数量</th>
-    <th>总价</th>
-    <th>商品图片</th>
-    <th>配送状态</th>
+    <th>OrderId</th>
+    <th>Product Name</th>
+    <th>Price</th>
+    <th>Quantity</th>
+    <th>Total Price</th>
+    <th>Product Image</th>
+    <th>Delivery Status</th>
   </tr>
 
-  <% for (OrderItem orderItem : orderItems) {
-    System.out.println("订单号: " + orderItem.getOrderId());
-  %>
+  <% for (OrderItem orderItem : orderItems) { %>
   <tr>
     <td><%= orderItem.getOrderId() %></td>
     <td><%= orderItem.getProductName() %></td>
     <td><%= orderItem.getPrice() %></td>
     <td><%= orderItem.getQuantity() %></td>
     <td><%= orderItem.getTotal() %></td>
-    <td><img src="<%= orderItem.getProductImage() %>" alt="商品图片" width="50" height="100"></td>
+    <td><img src="<%= orderItem.getProductImage() %>" alt="Product Image" width="50" height="100"></td>
     <td><%= orderItem.getDeliveryStatus() %></td>
   </tr>
 
@@ -104,19 +109,32 @@
     <td>电话号码:<%= orderItem.getPhoneNumber() %></td>
     <td>地址:<%= orderItem.getAddress() %></td>
   </tr>
+  <% System.out.println("orderItem.getDeliveryStatus(): " + orderItem.getDeliveryStatus()); %>
+  <% if (loggedInUser != null && loggedInUser.getRole() == 1 && "Pending".equals(orderItem.getDeliveryStatus())) { %>
+  <!-- 显示发货按钮 -->
+  <tr>
+    <td colspan="7">
+      <form action="UpdateOrderStatusServlet" method="post">
+        <input type="hidden" name="orderId" value="<%= orderItem.getOrderId() %>">
+        <input type="hidden" name="deliveryStatus" value="Shipped">
+        <button type="submit">制作成功</button>
+      </form>
+    </td>
+  </tr>
+  <% } %>
 
   <% } %>
 
 </table>
 
 <div class="button-container">
-  <a href="cart.jsp">返回购物车</a>
-  <a href="main.jsp">返回主页</a>
+  <a href="cart.jsp">Back to Cart</a>
+  <a href="main.jsp">Back to Main Page</a>
 </div>
 
 <%
   } else {
-    out.println("<p>您的订单历史为空。</p>");
+    out.println("<p> order history is empty.</p>");
   }
 %>
 

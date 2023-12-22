@@ -10,7 +10,6 @@ public class CartItem {
     private String image;
     private int cartId;
     public CartItem() {
-        // 默认构造方法
     }
 
     public CartItem(int productId, String productName, BigDecimal price, String image,int quantity,int cartId) {

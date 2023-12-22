@@ -96,7 +96,8 @@ public class UserDaoImpl implements UserDao {
                 user.setEmail(resultSet.getString("email"));  // 添加对 email 的设置
                 user.setPhoneNumber(resultSet.getString("phoneNumber"));
                 user.setAddress(resultSet.getString("address"));
-
+                // 添加对 role 的设置
+                user.setRole(resultSet.getInt("role"));
                 System.out.println("User retrieved by ID: " + user.toString());
             } else {
                 System.out.println("User not found with ID: " + userId);

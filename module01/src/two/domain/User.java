@@ -3,17 +3,13 @@ package two.domain;
 import java.util.Objects;
 
 public class User {
-
-    // 用户id
     private int id;
-    // 用户名
     private String username;
-    // 密码
     private String password;
     private String email;
     private String phoneNumber;
     private String address;
-    private int role; // 新添加的 role 字段
+    private int role;
     public int getRole() {
         return role;
     }

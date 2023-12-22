@@ -19,11 +19,6 @@ public class CartDaoImpl implements CartDao {
         try (Connection connection = JdbcUtil.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(
                      "INSERT INTO shopping_cart (user_id, product_id, quantity) VALUES (?, ?, ?)")) {
-
-            // 假设用户ID为1（你需要根据实际情况获取用户ID）
-            //暂时先用这里
-            //
-            //
             int userId = UserService.getLoggedInUserId();
 
             preparedStatement.setInt(1, userId);
@@ -65,7 +60,6 @@ public class CartDaoImpl implements CartDao {
                              "JOIN products p ON c.product_id = p.id " +
                              "WHERE c.user_id = ?")) {
 
-            // 假设用户ID为1（你需要根据实际情况获取用户ID）
             int userId = UserService.getLoggedInUserId();
 
             preparedStatement.setInt(1, userId);
@@ -73,7 +67,7 @@ public class CartDaoImpl implements CartDao {
             try (ResultSet resultSet = preparedStatement.executeQuery()) {
                 while (resultSet.next()) {
                     CartItem cartItem = extractCartItemFromResultSet(resultSet);
-                    cartItem.setCartId(resultSet.getInt("cart_id")); // 设置 cart_id
+                    cartItem.setCartId(resultSet.getInt("cart_id"));
                     cartItems.add(cartItem);
                 }
             }
@@ -96,7 +90,7 @@ public class CartDaoImpl implements CartDao {
                              "JOIN products p ON c.product_id = p.id " +
                              "WHERE c.user_id = ? AND c.product_id = ?")) {
 
-            // 假设用户ID为1（根据实际情况获取用户ID）
+
             int userId = UserService.getLoggedInUserId();
 
             preparedStatement.setInt(1, userId);
@@ -132,7 +126,7 @@ public class CartDaoImpl implements CartDao {
 
     private void handleSQLException(SQLException e) {
         e.printStackTrace();
-        // Log the exception or handle it as needed
+
     }
 
 }

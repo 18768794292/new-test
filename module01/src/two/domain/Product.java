@@ -1,7 +1,5 @@
 package two.domain;
-
 import java.math.BigDecimal;
-
 public class Product {
     private int id;
     private String name;
@@ -9,10 +7,15 @@ public class Product {
     private String description;
     private String image;
     private int stock;
-    private ProductType productType;  // 商品类型
+    private ProductType productType;
+    private int status;
+    public int getStatus() {
+        return status;
+    }
 
-    // Getters and setters...
-
+    public void setStatus(int status) {
+        this.status = status;
+    }
     public ProductType getProductType() {
         return productType;
     }

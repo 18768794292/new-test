@@ -18,18 +18,13 @@ public class CartServlet extends HttpServlet {
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         try {
-            // 获取购物车商品列表
             List<CartItem> cartItems = cartDao.getCartItems();
-
-            // 将购物车数据放入request属性
             request.setAttribute("cartItems", cartItems);
-
-            // 转发到cart.jsp页面
             RequestDispatcher dispatcher = request.getRequestDispatcher("/cart.jsp");
             dispatcher.forward(request, response);
         } catch (Exception e) {
             e.printStackTrace();
-            // 处理异常，发送错误响应
+
             response.getWriter().write("获取购物车数据时出错");
         }
     }

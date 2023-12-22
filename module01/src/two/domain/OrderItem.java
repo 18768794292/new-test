@@ -1,25 +1,25 @@
 package two.domain;
 
 import java.math.BigDecimal;
+import java.security.Timestamp;
 
 public class OrderItem {
-    private int orderId; // 新增订单ID
+    private int orderId;
     private int productId;
     private String productName;
     private BigDecimal price;
     private int quantity;
-    private BigDecimal total;  // 总价
-    private String image;  // 商品图片
-    // 用户名
+    private BigDecimal total;
+    private String image;
     private String username;
    private String phoneNumber;
   private String address;
-
+    private Timestamp orderDate;
+    private String deliveryStatus;
     public OrderItem() {
-        // 默认构造方法
     }
 
-    public OrderItem(int orderId,int productId, String productName, BigDecimal price, String image, int quantity,String username,String phoneNumber,String address) {
+    public OrderItem(int orderId,int productId, String productName, BigDecimal price, String image, int quantity,String username,String phoneNumber,String address,String deliveryStatus, Timestamp orderDate) {
         this.orderId = orderId;
         this.productId = productId;
         this.productName = productName;
@@ -29,7 +29,24 @@ public class OrderItem {
         this.username = username;
         this.phoneNumber=phoneNumber;
         this.address=address;
-        this.total = price.multiply(BigDecimal.valueOf(quantity));  // 计算总价
+        this.deliveryStatus = deliveryStatus;
+        this.total = price.multiply(BigDecimal.valueOf(quantity));
+        this.orderDate = orderDate;
+
+    }
+    public Timestamp getOrderDate() {
+        return orderDate;
+    }
+
+    public void setOrderDate(Timestamp orderDate) {
+        this.orderDate = orderDate;
+    }
+    public String getDeliveryStatus() {
+        return deliveryStatus;
+    }
+
+    public void setDeliveryStatus(String deliveryStatus) {
+        this.deliveryStatus = deliveryStatus;
     }
     public int getOrderId() {
         return orderId;
@@ -98,7 +115,7 @@ public class OrderItem {
 
     public void setQuantity(int quantity) {
         this.quantity = quantity;
-        updateTotal();  // 更新总价
+        updateTotal();
     }
 
     public BigDecimal getTotal() {
@@ -106,6 +123,6 @@ public class OrderItem {
     }
 
     public void updateTotal() {
-        this.total = price.multiply(BigDecimal.valueOf(quantity));  // 更新总价
+        this.total = price.multiply(BigDecimal.valueOf(quantity));
     }
 }
