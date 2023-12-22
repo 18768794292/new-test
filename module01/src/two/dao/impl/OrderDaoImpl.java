@@ -12,7 +12,8 @@ import java.util.List;
 
 public class OrderDaoImpl implements OrderDao {
     @Override
-    public void addToOrder(int productId, String productName, BigDecimal productPrice, String image, int quantity,String username,String phoneNumber,String address) throws Exception {
+    public void addToOrder(List<Integer> productIds, List<String> productNames, List<BigDecimal> productPrices,
+                           List<String> images, List<Integer> quantities, String username, String phoneNumber, String address) throws Exception {
         Connection connection = null;
         try {
             connection = JdbcUtil.getConnection();
@@ -27,7 +28,6 @@ public class OrderDaoImpl implements OrderDao {
                 orderStatement.setInt(1, userId);
                 orderStatement.executeUpdate();
 
-
                 try (ResultSet generatedKeys = orderStatement.getGeneratedKeys()) {
                     if (generatedKeys.next()) {
                         orderId = generatedKeys.getInt(1);
@@ -37,20 +37,24 @@ public class OrderDaoImpl implements OrderDao {
                 }
             }
 
-
             System.out.println("User ID: " + userId + ", Order ID: " + orderId);
 
             try (PreparedStatement detailsStatement = connection.prepareStatement(
                     "INSERT INTO order_details (order_id, product_id, quantity, total_price) VALUES (?, ?, ?, ?)")) {
 
-                detailsStatement.setInt(1, orderId);
-                detailsStatement.setInt(2, productId);
-                detailsStatement.setInt(3, quantity);
-                detailsStatement.setBigDecimal(4, productPrice.multiply(BigDecimal.valueOf(quantity))); // 计算总价
+                // 遍历每个商品，将其插入订单详情表
+                for (int i = 0; i < productIds.size(); i++) {
+                    detailsStatement.setInt(1, orderId);
+                    detailsStatement.setInt(2, productIds.get(i));
+                    detailsStatement.setInt(3, quantities.get(i));
+                    detailsStatement.setBigDecimal(4, productPrices.get(i).multiply(BigDecimal.valueOf(quantities.get(i))));
 
-                detailsStatement.executeUpdate();
+                    detailsStatement.addBatch();
+                }
+
+                // 批量执行插入
+                detailsStatement.executeBatch();
             }
-
 
             connection.commit();
         } catch (SQLException e) {
@@ -196,8 +200,9 @@ public class OrderDaoImpl implements OrderDao {
         try (Connection connection = JdbcUtil.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(
                      "UPDATE products " +
-                             "SET stock = stock - (SELECT quantity FROM order_details WHERE order_id = ? AND delivery_status = 'Shipped') " +
+                             "SET stock = stock - (SELECT SUM(quantity) FROM order_details WHERE order_id = ? AND delivery_status = 'Shipped') " +
                              "WHERE id IN (SELECT product_id FROM order_details WHERE order_id = ?)"
+
              )) {
             preparedStatement.setInt(1, orderId);
             preparedStatement.setInt(2, orderId);

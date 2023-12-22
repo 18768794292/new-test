@@ -19,6 +19,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 
 @WebServlet("/addToOrder")
@@ -28,26 +29,37 @@ public class AddToOrderServlet extends HttpServlet {
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         try {
-
             String[] selectedItems = request.getParameterValues("selectedItems");
 
             if (selectedItems != null && selectedItems.length > 0) {
+                List<Integer> productIds = new ArrayList<>();
+                List<String> productNames = new ArrayList<>();
+                List<BigDecimal> productPrices = new ArrayList<>();
+                List<String> images = new ArrayList<>();
+                List<Integer> quantities = new ArrayList<>();
+
                 for (String itemId : selectedItems) {
                     int productId = Integer.parseInt(itemId);
-
-
                     CartItem cartItem = cartDao.getCartItemById(productId);
-                    UserDao userDao = new UserDaoImpl();
-                    int userId = UserService.getLoggedInUserId();
-                    User user = userDao.getUserById(userId);
 
-                    orderDao.addToOrder(cartItem.getProductId(), cartItem.getProductName(), cartItem.getPrice(), cartItem.getProductImage(), cartItem.getQuantity(), user.getUsername(),
-                            user.getPhoneNumber(),
-                            user.getAddress());
+                    productIds.add(cartItem.getProductId());
+                    productNames.add(cartItem.getProductName());
+                    productPrices.add(cartItem.getPrice());
+                    images.add(cartItem.getProductImage());
+                    quantities.add(cartItem.getQuantity());
+
                     // 从购物车中移除
                     cartDao.removeFromCart(cartItem.getCartId());
                     System.out.println("删除相对应商品");
                 }
+
+                UserDao userDao = new UserDaoImpl();
+                int userId = UserService.getLoggedInUserId();
+                User user = userDao.getUserById(userId);
+
+                // 调用修改后的addToOrder方法
+                orderDao.addToOrder(productIds, productNames, productPrices, images, quantities,
+                        user.getUsername(), user.getPhoneNumber(), user.getAddress());
             }
 
             // 获取更新后
@@ -59,9 +71,7 @@ public class AddToOrderServlet extends HttpServlet {
             response.sendRedirect(request.getContextPath() + "/orders.jsp");
         } catch (Exception e) {
             e.printStackTrace();
-
             response.getWriter().write("添加商品到订单时出错");
         }
     }
 }
-

@@ -2,6 +2,7 @@ package two.domain;
 
 import java.math.BigDecimal;
 import java.security.Timestamp;
+import java.util.List;
 
 public class OrderItem {
     private int orderId;
@@ -11,6 +12,7 @@ public class OrderItem {
     private int quantity;
     private BigDecimal total;
     private String image;
+
     private String username;
    private String phoneNumber;
   private String address;
@@ -125,4 +127,15 @@ public class OrderItem {
     public void updateTotal() {
         this.total = price.multiply(BigDecimal.valueOf(quantity));
     }
+    // 在 OrderItem 类中添加以下方法
+    public BigDecimal calculateTotalOrderPrice(List<OrderItem> orderItems) {
+        BigDecimal totalOrderPrice = BigDecimal.ZERO;
+        for (OrderItem item : orderItems) {
+            if (item.getOrderId() == this.getOrderId()) {
+                totalOrderPrice = totalOrderPrice.add(item.getTotal());
+            }
+        }
+        return totalOrderPrice;
+    }
+
 }
